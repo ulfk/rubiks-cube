@@ -9,6 +9,7 @@ namespace RubiksCubeLib
     public class RubiksCube
     {
         private readonly List<Piece> _pieces = new List<Piece>();
+        private readonly Regex _regex;
 
         private const string AlgorithmPattern = @"([UDRLFB][2']{0,1})";
         private const string AlgorithmCheckPattern = @"^(([UDRLFB][2']{0,1})*)$";
@@ -30,6 +31,7 @@ namespace RubiksCubeLib
 
         public RubiksCube()
         {
+            _regex = new Regex(AlgorithmPattern, RegexOptions.None);
             Init();
         }
 
@@ -128,14 +130,15 @@ namespace RubiksCubeLib
 
         public void ExecAlgorithm(string algorithm)
         {
-            var trimmedAlgorithm = TrimAlgorithm(algorithm);
-            var isValid = IsAlgorithmValid(trimmedAlgorithm);
-            if(!isValid)
+            if(!IsAlgorithmValid(algorithm))
                 throw new Exception($"Invalid characters in algorithm: {algorithm}");
-            var regEx = new Regex(AlgorithmPattern, RegexOptions.None);
-            var matchCollection = regEx.Matches(trimmedAlgorithm);
-            var rotations = matchCollection.Cast<Match>().Select(m => m.Value).ToList();
-            rotations.ForEach(Rotate);
+            DecomposeAlgorithm(algorithm).ForEach(Rotate);
+        }
+
+        private List<string> DecomposeAlgorithm(string algorithm)
+        {
+            var matchCollection = _regex.Matches(TrimAlgorithm(algorithm));
+            return matchCollection.Cast<Match>().Select(m => m.Value).ToList();
         }
 
         private static string TrimAlgorithm(string algorithm)

@@ -7,7 +7,7 @@ using RubiksCubeLib;
 namespace RubiksCubeTest
 {
     [TestClass]
-    public class RubiksCubeTest
+    public class RubiksCubeTests
     {
         [TestMethod]
         public void CheckInitialCube()
