@@ -6,10 +6,10 @@
 
         public CubeOrientation CubeOrientation { get; set; }
 
-        public ColorTag(CubeColor cubeColor, CubeOrientation oreintation)
+        public ColorTag(CubeColor cubeColor, CubeOrientation orientation)
         {
             CubeColor = cubeColor;
-            CubeOrientation = oreintation;
+            CubeOrientation = orientation;
         }
 
         private CubeOrientation _preparedCubeOrientation;
