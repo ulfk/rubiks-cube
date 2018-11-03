@@ -186,6 +186,7 @@
             // 
             // textBoxAlgorithm
             // 
+            this.textBoxAlgorithm.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             this.textBoxAlgorithm.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBoxAlgorithm.Location = new System.Drawing.Point(295, 403);
             this.textBoxAlgorithm.Name = "textBoxAlgorithm";
