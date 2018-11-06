@@ -11,16 +11,16 @@ namespace RubiksCubeLib
         private readonly List<Piece> _pieces = new List<Piece>();
         private readonly Regex _regex;
 
-        private const string AlgorithmPattern = @"([UDRLFB][2']{0,1})";
-        private const string AlgorithmCheckPattern = @"^(([UDRLFB][2']{0,1})*)$";
+        private const string AlgorithmPattern = @"([UDRLFBMES][2']{0,1})";
+        private const string AlgorithmCheckPattern = @"^(([UDRLFBMES][2']{0,1})*)$";
         private const string AlgorithmTrimPattern = @"\s+|\(|\)";
 
-        private const CubeOrientation Up = CubeOrientation.Up;
-        private const CubeOrientation Down = CubeOrientation.Down;
-        private const CubeOrientation Left = CubeOrientation.Left;
-        private const CubeOrientation Right = CubeOrientation.Right;
-        private const CubeOrientation Front = CubeOrientation.Front;
-        private const CubeOrientation Back = CubeOrientation.Back;
+        private const CubeSide Up = CubeSide.Up;
+        private const CubeSide Down = CubeSide.Down;
+        private const CubeSide Left = CubeSide.Left;
+        private const CubeSide Right = CubeSide.Right;
+        private const CubeSide Front = CubeSide.Front;
+        private const CubeSide Back = CubeSide.Back;
 
         private const CubeColor White = CubeColor.White;
         private const CubeColor Yellow = CubeColor.Yellow;
@@ -33,6 +33,39 @@ namespace RubiksCubeLib
         {
             _regex = new Regex(AlgorithmPattern, RegexOptions.None);
             Init();
+        }
+
+        public void Reset()
+        {
+            Init();
+        }
+
+        public List<ColorTag> GetTags(CubeSide cubeSide)
+        {
+            return _pieces.SelectMany(p => p.ColorTags.Where(t => t.CubeSide == cubeSide)).ToList();
+        }
+
+        public List<Piece> GetPieces()
+        {
+            return _pieces;
+        }
+
+        public void Rotate(CubeSlice slice, MoveDirection direction = MoveDirection.Single)
+        {
+            var movement = MovementRepository.Get(slice, direction) ?? throw new Exception($"Unknown rotation: {slice} {direction}");
+            DoRotation(movement);
+        }
+
+        public void ExecAlgorithm(string algorithm)
+        {
+            if (!IsAlgorithmValid(algorithm))
+                throw new Exception($"Invalid characters in algorithm: {algorithm}");
+            DecomposeAlgorithm(algorithm).ForEach(Rotate);
+        }
+
+        public bool IsAlgorithmValid(string algorithm)
+        {
+            return Regex.IsMatch(TrimAlgorithm(algorithm), AlgorithmCheckPattern);
         }
 
         private void Init()
@@ -74,9 +107,9 @@ namespace RubiksCubeLib
             CreatePiece(2, 0, 2, CreateTag(Blue, Back), CreateTag(Red, Right), CreateTag(Yellow, Down));
         }
 
-        private ColorTag CreateTag(CubeColor cubeColor, CubeOrientation cubeOrientation)
+        private ColorTag CreateTag(CubeColor cubeColor, CubeSide cubeSide)
         {
-            return new ColorTag(cubeColor, cubeOrientation);
+            return new ColorTag(cubeColor, cubeSide);
         }
 
         private void CreatePiece(int x, int y, int z, params ColorTag[] colorTags)
@@ -89,30 +122,9 @@ namespace RubiksCubeLib
                 });
         }
 
-        public void Reset()
+        private List<Piece> GetPieces(CubeSlice cubeSlice)
         {
-            Init();
-        }
-
-        public List<ColorTag> GetTags(CubeOrientation cubeOrientation)
-        {
-            return _pieces.SelectMany(p => p.ColorTags.Where(t => t.CubeOrientation == cubeOrientation)).ToList();
-        }
-
-        private List<Piece> GetPieces(CubeOrientation cubeOrientation)
-        {
-            return _pieces.Where(p => p.ColorTags.Any(t => t.CubeOrientation == cubeOrientation)).ToList();
-        }
-
-        public List<Piece> GetPieces()
-        {
-            return _pieces;
-        }
-
-        public void Rotate(CubeOrientation side, MoveDirection direction = MoveDirection.Regular)
-        {
-            var movement = MovementRepository.Get(side, direction) ?? throw new Exception($"Unknown rotation: {side} {direction}");
-            DoRotation(movement);
+            return PiecesSelector.PeacesBySlice(_pieces, cubeSlice);
         }
 
         private void Rotate(string identifier)
@@ -128,13 +140,6 @@ namespace RubiksCubeLib
             PrepareRotation(movement).ForEach(p => p.ExecChanges());
         }
 
-        public void ExecAlgorithm(string algorithm)
-        {
-            if(!IsAlgorithmValid(algorithm))
-                throw new Exception($"Invalid characters in algorithm: {algorithm}");
-            DecomposeAlgorithm(algorithm).ForEach(Rotate);
-        }
-
         private List<string> DecomposeAlgorithm(string algorithm)
         {
             var matchCollection = _regex.Matches(TrimAlgorithm(algorithm));
@@ -146,18 +151,13 @@ namespace RubiksCubeLib
             return Regex.Replace(algorithm, AlgorithmTrimPattern, string.Empty);
         }
 
-        public bool IsAlgorithmValid(string algorithm)
-        {
-            return Regex.IsMatch(TrimAlgorithm(algorithm), AlgorithmCheckPattern);
-        }
-
         private List<Piece> PrepareRotation(Movement movement)
         {
-            var pieces = GetPieces(movement.Side);
+            var pieces = GetPieces(movement.Slice);
             foreach (var positionsChange in movement.PositionChanges)
             {
                 pieces.Single(p => p.Position.Equals(positionsChange.From))
-                    .PrepareChanges(positionsChange.To, movement.OrientationChanges);
+                    .PrepareChanges(positionsChange.To, movement.SideChanges);
             }
 
             return pieces;

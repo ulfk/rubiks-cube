@@ -4,16 +4,12 @@ namespace RubiksCubeLib
 {
     public class MovementRepository
     {
-        private const CubeOrientation Up = CubeOrientation.Up;
-        private const CubeOrientation Down = CubeOrientation.Down;
-        private const CubeOrientation Left = CubeOrientation.Left;
-        private const CubeOrientation Right = CubeOrientation.Right;
-        private const CubeOrientation Front = CubeOrientation.Front;
-        private const CubeOrientation Back = CubeOrientation.Back;
-
-        private const MoveDirection Inverted = MoveDirection.Inverted;
-        private const MoveDirection Regular = MoveDirection.Regular;
-        private const MoveDirection Double = MoveDirection.Double;
+        private const CubeSide Up = CubeSide.Up;
+        private const CubeSide Down = CubeSide.Down;
+        private const CubeSide Left = CubeSide.Left;
+        private const CubeSide Right = CubeSide.Right;
+        private const CubeSide Front = CubeSide.Front;
+        private const CubeSide Back = CubeSide.Back;
 
         private static MovementRepository _movementRepository;
 
@@ -22,6 +18,9 @@ namespace RubiksCubeLib
             _movementRepository = this;
         }
 
+        /// <summary>
+        /// Singleton
+        /// </summary>
         private static MovementRepository Instance => _movementRepository ?? new MovementRepository();
 
         /// <summary>
@@ -30,9 +29,9 @@ namespace RubiksCubeLib
         /// <param name="side"></param>
         /// <param name="direction"></param>
         /// <returns>Liefert <see cref="Movement"/> oder NULL wenn kein passender Eintrag gefunden wurde.</returns>
-        public static Movement Get(CubeOrientation side, MoveDirection direction)
+        public static Movement Get(CubeSlice slice, MoveDirection direction)
         {
-            return Instance._movements.SingleOrDefault(m => m.Side == side && m.Direction == direction);
+            return Instance._movements.SingleOrDefault(m => m.Slice == slice && m.Direction == direction);
         }
 
         /// <summary>
@@ -45,20 +44,22 @@ namespace RubiksCubeLib
             return Instance._movements.SingleOrDefault(m => m.Identifier == identifier);
         }
 
-        //TODO: Middle-Moves
+        /// <summary>
+        /// List of possible movements and how to execute them
+        /// </summary>
         private readonly Movement[] _movements =
         {
             new Movement
             {
                 Identifier = "F",
-                Side = Front,
-                Direction = Regular,
-                OrientationChanges = new[]
+                Slice = CubeSlice.Front,
+                Direction = MoveDirection.Single,
+                SideChanges = new[]
                 {
-                    new OrientationChange(Up, Right),
-                    new OrientationChange(Right, Down),
-                    new OrientationChange(Down, Left),
-                    new OrientationChange(Left, Up)
+                    new SideChange(Up, Right),
+                    new SideChange(Right, Down),
+                    new SideChange(Down, Left),
+                    new SideChange(Left, Up)
                 },
                 PositionChanges = new[]
                 {
@@ -75,14 +76,14 @@ namespace RubiksCubeLib
             new Movement
             {
                 Identifier = "F'",
-                Side = Front,
-                Direction = Inverted,
-                OrientationChanges = new[]
+                Slice = CubeSlice.Front,
+                Direction = MoveDirection.Inverted,
+                SideChanges = new[]
                 {
-                    new OrientationChange(Up, Left),
-                    new OrientationChange(Right, Up),
-                    new OrientationChange(Down, Right),
-                    new OrientationChange(Left, Down)
+                    new SideChange(Up, Left),
+                    new SideChange(Right, Up),
+                    new SideChange(Down, Right),
+                    new SideChange(Left, Down)
                 },
                 PositionChanges = new[]
                 {
@@ -99,14 +100,14 @@ namespace RubiksCubeLib
             new Movement
             {
                 Identifier = "F2",
-                Side = Front,
-                Direction = Double,
-                OrientationChanges = new[]
+                Slice = CubeSlice.Front,
+                Direction = MoveDirection.Double,
+                SideChanges = new[]
                 {
-                    new OrientationChange(Up, Down),
-                    new OrientationChange(Down, Up),
-                    new OrientationChange(Right, Left),
-                    new OrientationChange(Left, Right)
+                    new SideChange(Up, Down),
+                    new SideChange(Down, Up),
+                    new SideChange(Right, Left),
+                    new SideChange(Left, Right)
                 },
                 PositionChanges = new[]
                 {
@@ -123,14 +124,14 @@ namespace RubiksCubeLib
             new Movement
             {
                 Identifier = "R",
-                Side = Right,
-                Direction = Regular,
-                OrientationChanges = new[]
+                Slice = CubeSlice.Right,
+                Direction = MoveDirection.Single,
+                SideChanges = new[]
                 {
-                    new OrientationChange(Up, Back),
-                    new OrientationChange(Back, Down),
-                    new OrientationChange(Down, Front),
-                    new OrientationChange(Front, Up)
+                    new SideChange(Up, Back),
+                    new SideChange(Back, Down),
+                    new SideChange(Down, Front),
+                    new SideChange(Front, Up)
                 },
                 PositionChanges = new[]
                 {
@@ -147,14 +148,14 @@ namespace RubiksCubeLib
             new Movement
             {
                 Identifier = "R'",
-                Side = Right,
-                Direction = Inverted,
-                OrientationChanges = new[]
+                Slice = CubeSlice.Right,
+                Direction = MoveDirection.Inverted,
+                SideChanges = new[]
                 {
-                    new OrientationChange(Up, Front),
-                    new OrientationChange(Back, Up),
-                    new OrientationChange(Down, Back),
-                    new OrientationChange(Front, Down)
+                    new SideChange(Up, Front),
+                    new SideChange(Back, Up),
+                    new SideChange(Down, Back),
+                    new SideChange(Front, Down)
                 },
                 PositionChanges = new[]
                 {
@@ -171,14 +172,14 @@ namespace RubiksCubeLib
             new Movement
             {
                 Identifier = "R2",
-                Side = Right,
-                Direction = Double,
-                OrientationChanges = new[]
+                Slice = CubeSlice.Right,
+                Direction = MoveDirection.Double,
+                SideChanges = new[]
                 {
-                    new OrientationChange(Up, Down),
-                    new OrientationChange(Back, Front),
-                    new OrientationChange(Down, Up),
-                    new OrientationChange(Front, Back)
+                    new SideChange(Up, Down),
+                    new SideChange(Back, Front),
+                    new SideChange(Down, Up),
+                    new SideChange(Front, Back)
                 },
                 PositionChanges = new[]
                 {
@@ -195,14 +196,14 @@ namespace RubiksCubeLib
             new Movement
             {
                 Identifier = "L",
-                Side = Left,
-                Direction = Regular,
-                OrientationChanges = new[]
+                Slice = CubeSlice.Left,
+                Direction = MoveDirection.Single,
+                SideChanges = new[]
                 {
-                    new OrientationChange(Up, Front),
-                    new OrientationChange(Back, Up),
-                    new OrientationChange(Down, Back),
-                    new OrientationChange(Front, Down)
+                    new SideChange(Up, Front),
+                    new SideChange(Back, Up),
+                    new SideChange(Down, Back),
+                    new SideChange(Front, Down)
                 },
                 PositionChanges = new[]
                 {
@@ -219,14 +220,14 @@ namespace RubiksCubeLib
             new Movement
             {
                 Identifier = "L'",
-                Side = Left,
-                Direction = Inverted,
-                OrientationChanges = new[]
+                Slice = CubeSlice.Left,
+                Direction = MoveDirection.Inverted,
+                SideChanges = new[]
                 {
-                    new OrientationChange(Up, Back),
-                    new OrientationChange(Back, Down),
-                    new OrientationChange(Down, Front),
-                    new OrientationChange(Front, Up)
+                    new SideChange(Up, Back),
+                    new SideChange(Back, Down),
+                    new SideChange(Down, Front),
+                    new SideChange(Front, Up)
                 },
                 PositionChanges = new[]
                 {
@@ -243,14 +244,14 @@ namespace RubiksCubeLib
             new Movement
             {
                 Identifier = "L2",
-                Side = Left,
-                Direction = Double,
-                OrientationChanges = new[]
+                Slice = CubeSlice.Left,
+                Direction = MoveDirection.Double,
+                SideChanges = new[]
                 {
-                    new OrientationChange(Up, Down),
-                    new OrientationChange(Back, Front),
-                    new OrientationChange(Down, Up),
-                    new OrientationChange(Front, Back)
+                    new SideChange(Up, Down),
+                    new SideChange(Back, Front),
+                    new SideChange(Down, Up),
+                    new SideChange(Front, Back)
                 },
                 PositionChanges = new[]
                 {
@@ -267,14 +268,14 @@ namespace RubiksCubeLib
             new Movement
             {
                 Identifier = "B",
-                Side = Back,
-                Direction = Regular,
-                OrientationChanges = new[]
+                Slice = CubeSlice.Back,
+                Direction = MoveDirection.Single,
+                SideChanges = new[]
                 {
-                    new OrientationChange(Up, Left),
-                    new OrientationChange(Right, Up),
-                    new OrientationChange(Down, Right),
-                    new OrientationChange(Left, Down)
+                    new SideChange(Up, Left),
+                    new SideChange(Right, Up),
+                    new SideChange(Down, Right),
+                    new SideChange(Left, Down)
                 },
                 PositionChanges = new[]
                 {
@@ -291,14 +292,14 @@ namespace RubiksCubeLib
             new Movement
             {
                 Identifier = "B'",
-                Side = Back,
-                Direction = Inverted,
-                OrientationChanges = new[]
+                Slice = CubeSlice.Back,
+                Direction = MoveDirection.Inverted,
+                SideChanges = new[]
                 {
-                    new OrientationChange(Up, Right),
-                    new OrientationChange(Right, Down),
-                    new OrientationChange(Down, Left),
-                    new OrientationChange(Left, Up)
+                    new SideChange(Up, Right),
+                    new SideChange(Right, Down),
+                    new SideChange(Down, Left),
+                    new SideChange(Left, Up)
                 },
                 PositionChanges = new[]
                 {
@@ -315,14 +316,14 @@ namespace RubiksCubeLib
             new Movement
             {
                 Identifier = "B2",
-                Side = Back,
-                Direction = Double,
-                OrientationChanges = new[]
+                Slice = CubeSlice.Back,
+                Direction = MoveDirection.Double,
+                SideChanges = new[]
                 {
-                    new OrientationChange(Up, Down),
-                    new OrientationChange(Right, Left),
-                    new OrientationChange(Down, Up),
-                    new OrientationChange(Left, Right)
+                    new SideChange(Up, Down),
+                    new SideChange(Right, Left),
+                    new SideChange(Down, Up),
+                    new SideChange(Left, Right)
                 },
                 PositionChanges = new[]
                 {
@@ -339,14 +340,14 @@ namespace RubiksCubeLib
             new Movement
             {
                 Identifier = "U",
-                Side = Up,
-                Direction = Regular,
-                OrientationChanges = new[]
+                Slice = CubeSlice.Up,
+                Direction = MoveDirection.Single,
+                SideChanges = new[]
                 {
-                    new OrientationChange(Left, Back),
-                    new OrientationChange(Back, Right),
-                    new OrientationChange(Right, Front),
-                    new OrientationChange(Front, Left)
+                    new SideChange(Left, Back),
+                    new SideChange(Back, Right),
+                    new SideChange(Right, Front),
+                    new SideChange(Front, Left)
                 },
                 PositionChanges = new[]
                 {
@@ -363,14 +364,14 @@ namespace RubiksCubeLib
             new Movement
             {
                 Identifier = "U'",
-                Side = Up,
-                Direction = Inverted,
-                OrientationChanges = new[]
+                Slice = CubeSlice.Up,
+                Direction = MoveDirection.Inverted,
+                SideChanges = new[]
                 {
-                    new OrientationChange(Left, Front),
-                    new OrientationChange(Back, Left),
-                    new OrientationChange(Right, Back),
-                    new OrientationChange(Front, Right)
+                    new SideChange(Left, Front),
+                    new SideChange(Back, Left),
+                    new SideChange(Right, Back),
+                    new SideChange(Front, Right)
                 },
                 PositionChanges = new[]
                 {
@@ -387,14 +388,14 @@ namespace RubiksCubeLib
             new Movement
             {
                 Identifier = "U2",
-                Side = Up,
-                Direction = Double,
-                OrientationChanges = new[]
+                Slice = CubeSlice.Up,
+                Direction = MoveDirection.Double,
+                SideChanges = new[]
                 {
-                    new OrientationChange(Left, Right),
-                    new OrientationChange(Back, Front),
-                    new OrientationChange(Right, Left),
-                    new OrientationChange(Front, Back)
+                    new SideChange(Left, Right),
+                    new SideChange(Back, Front),
+                    new SideChange(Right, Left),
+                    new SideChange(Front, Back)
                 },
                 PositionChanges = new[]
                 {
@@ -411,14 +412,14 @@ namespace RubiksCubeLib
             new Movement
             {
                 Identifier = "D",
-                Side = Down,
-                Direction = Regular,
-                OrientationChanges = new[]
+                Slice = CubeSlice.Down,
+                Direction = MoveDirection.Single,
+                SideChanges = new[]
                 {
-                    new OrientationChange(Left, Front),
-                    new OrientationChange(Back, Left),
-                    new OrientationChange(Right, Back),
-                    new OrientationChange(Front, Right)
+                    new SideChange(Left, Front),
+                    new SideChange(Back, Left),
+                    new SideChange(Right, Back),
+                    new SideChange(Front, Right)
                 },
                 PositionChanges = new[]
                 {
@@ -435,14 +436,14 @@ namespace RubiksCubeLib
             new Movement
             {
                 Identifier = "D'",
-                Side = Down,
-                Direction = Inverted,
-                OrientationChanges = new[]
+                Slice = CubeSlice.Down,
+                Direction = MoveDirection.Inverted,
+                SideChanges = new[]
                 {
-                    new OrientationChange(Left, Back),
-                    new OrientationChange(Back, Right),
-                    new OrientationChange(Right, Front),
-                    new OrientationChange(Front, Left)
+                    new SideChange(Left, Back),
+                    new SideChange(Back, Right),
+                    new SideChange(Right, Front),
+                    new SideChange(Front, Left)
                 },
                 PositionChanges = new[]
                 {
@@ -459,14 +460,14 @@ namespace RubiksCubeLib
             new Movement
             {
                 Identifier = "D2",
-                Side = Down,
-                Direction = Double,
-                OrientationChanges = new[]
+                Slice = CubeSlice.Down,
+                Direction = MoveDirection.Double,
+                SideChanges = new[]
                 {
-                    new OrientationChange(Left, Right),
-                    new OrientationChange(Back, Front),
-                    new OrientationChange(Right, Left),
-                    new OrientationChange(Front, Back)
+                    new SideChange(Left, Right),
+                    new SideChange(Back, Front),
+                    new SideChange(Right, Left),
+                    new SideChange(Front, Back)
                 },
                 PositionChanges = new[]
                 {
@@ -478,6 +479,222 @@ namespace RubiksCubeLib
                     new PositionChange(1, 0, 2, 1, 0, 0),
                     new PositionChange(0, 0, 2, 2, 0, 0),
                     new PositionChange(0, 0, 1, 2, 0, 1)
+                }
+            },
+            new Movement
+            {
+                Identifier = "M",
+                Slice = CubeSlice.Middle,
+                Direction = MoveDirection.Single,
+                SideChanges = new[]
+                {
+                    new SideChange(Up, Front),
+                    new SideChange(Front, Down),
+                    new SideChange(Down, Back),
+                    new SideChange(Back, Up)
+                },
+                PositionChanges = new[]
+                {
+                    new PositionChange(1, 2, 1, 1, 1, 0),
+                    new PositionChange(1, 2, 0, 1, 0, 0),
+                    new PositionChange(1, 1, 0, 1, 0, 1),
+                    new PositionChange(1, 0, 0, 1, 0, 2),
+                    new PositionChange(1, 0, 1, 1, 1, 2),
+                    new PositionChange(1, 0, 2, 1, 2, 2),
+                    new PositionChange(1, 1, 2, 1, 2, 1),
+                    new PositionChange(1, 2, 2, 1, 2, 0)
+                }
+            },
+            new Movement
+            {
+                Identifier = "M'",
+                Slice = CubeSlice.Middle,
+                Direction = MoveDirection.Inverted,
+                SideChanges = new[]
+                {
+                    new SideChange(Up, Back),
+                    new SideChange(Front, Up),
+                    new SideChange(Down, Front),
+                    new SideChange(Back, Down)
+                },
+                PositionChanges = new[]
+                {
+                    new PositionChange(1, 2, 1, 1, 1, 2),
+                    new PositionChange(1, 2, 0, 1, 2, 2),
+                    new PositionChange(1, 1, 0, 1, 2, 1),
+                    new PositionChange(1, 0, 0, 1, 2, 0),
+                    new PositionChange(1, 0, 1, 1, 1, 0),
+                    new PositionChange(1, 0, 2, 1, 0, 0),
+                    new PositionChange(1, 1, 2, 1, 0, 1),
+                    new PositionChange(1, 2, 2, 1, 0, 2)
+                }
+            },
+            new Movement
+            {
+                Identifier = "M2",
+                Slice = CubeSlice.Middle,
+                Direction = MoveDirection.Double,
+                SideChanges = new[]
+                {
+                    new SideChange(Up, Down),
+                    new SideChange(Front, Back),
+                    new SideChange(Down, Up),
+                    new SideChange(Back, Front)
+                },
+                PositionChanges = new[]
+                {
+                    new PositionChange(1, 2, 1, 1, 0, 1),
+                    new PositionChange(1, 2, 0, 1, 0, 2),
+                    new PositionChange(1, 1, 0, 1, 1, 2),
+                    new PositionChange(1, 0, 0, 1, 2, 2),
+                    new PositionChange(1, 0, 1, 1, 2, 1),
+                    new PositionChange(1, 0, 2, 1, 2, 0),
+                    new PositionChange(1, 1, 2, 1, 1, 0),
+                    new PositionChange(1, 2, 2, 1, 0, 0)
+                }
+            },
+            new Movement
+            {
+                Identifier = "E",
+                Slice = CubeSlice.Equator,
+                Direction = MoveDirection.Single,
+                SideChanges = new[]
+                {
+                    new SideChange(Front, Right),
+                    new SideChange(Right, Back),
+                    new SideChange(Back, Left),
+                    new SideChange(Left, Front)
+                },
+                PositionChanges = new[]
+                {
+                    new PositionChange(1, 1, 0, 2, 1, 1),
+                    new PositionChange(2, 1, 0, 2, 1, 2),
+                    new PositionChange(2, 1, 1, 1, 1, 2),
+                    new PositionChange(2, 1, 2, 0, 1, 2),
+                    new PositionChange(1, 1, 2, 0, 1, 1),
+                    new PositionChange(0, 1, 2, 0, 1, 0),
+                    new PositionChange(0, 1, 1, 1, 1, 0),
+                    new PositionChange(0, 1, 0, 2, 1, 0)
+                }
+            },
+            new Movement
+            {
+                Identifier = "E'",
+                Slice = CubeSlice.Equator,
+                Direction = MoveDirection.Inverted,
+                SideChanges = new[]
+                {
+                    new SideChange(Front, Left),
+                    new SideChange(Right, Front),
+                    new SideChange(Back, Right),
+                    new SideChange(Left, Back)
+                },
+                PositionChanges = new[]
+                {
+                    new PositionChange(1, 1, 0, 0, 1, 1),
+                    new PositionChange(2, 1, 0, 0, 1, 0),
+                    new PositionChange(2, 1, 1, 1, 1, 0),
+                    new PositionChange(2, 1, 2, 2, 1, 0),
+                    new PositionChange(1, 1, 2, 2, 1, 1),
+                    new PositionChange(0, 1, 2, 2, 1, 2),
+                    new PositionChange(0, 1, 1, 1, 1, 2),
+                    new PositionChange(0, 1, 0, 0, 1, 2)
+                }
+            },
+            new Movement
+            {
+                Identifier = "E2",
+                Slice = CubeSlice.Equator,
+                Direction = MoveDirection.Double,
+                SideChanges = new[]
+                {
+                    new SideChange(Front, Back),
+                    new SideChange(Right, Left),
+                    new SideChange(Back, Front),
+                    new SideChange(Left, Right)
+                },
+                PositionChanges = new[]
+                {
+                    new PositionChange(1, 1, 0, 1, 1, 2),
+                    new PositionChange(2, 1, 0, 0, 1, 2),
+                    new PositionChange(2, 1, 1, 0, 1, 1),
+                    new PositionChange(2, 1, 2, 0, 1, 0),
+                    new PositionChange(1, 1, 2, 1, 1, 0),
+                    new PositionChange(0, 1, 2, 2, 1, 0),
+                    new PositionChange(0, 1, 1, 2, 1, 1),
+                    new PositionChange(0, 1, 0, 2, 1, 2)
+                }
+            },
+            new Movement
+            {
+                Identifier = "S",
+                Slice = CubeSlice.Standing,
+                Direction = MoveDirection.Single,
+                SideChanges = new[]
+                {
+                    new SideChange(Up, Right),
+                    new SideChange(Right, Down),
+                    new SideChange(Down, Left),
+                    new SideChange(Left, Up)
+                },
+                PositionChanges = new[]
+                {
+                    new PositionChange(1, 2, 1, 2, 1, 1),
+                    new PositionChange(2, 2, 1, 2, 0, 1),
+                    new PositionChange(2, 1, 1, 1, 0, 1),
+                    new PositionChange(2, 0, 1, 0, 0, 1),
+                    new PositionChange(1, 0, 1, 0, 1, 1),
+                    new PositionChange(0, 0, 1, 0, 2, 1),
+                    new PositionChange(0, 1, 1, 1, 2, 1),
+                    new PositionChange(0, 2, 1, 2, 2, 1)
+                }
+            },
+            new Movement
+            {
+                Identifier = "S'",
+                Slice = CubeSlice.Standing,
+                Direction = MoveDirection.Inverted,
+                SideChanges = new[]
+                {
+                    new SideChange(Up, Left),
+                    new SideChange(Right, Up),
+                    new SideChange(Down, Right),
+                    new SideChange(Left, Down)
+                },
+                PositionChanges = new[]
+                {
+                    new PositionChange(1, 2, 1, 0, 1, 1),
+                    new PositionChange(2, 2, 1, 0, 2, 1),
+                    new PositionChange(2, 1, 1, 1, 2, 1),
+                    new PositionChange(2, 0, 1, 2, 2, 1),
+                    new PositionChange(1, 0, 1, 2, 1, 1),
+                    new PositionChange(0, 0, 1, 2, 0, 1),
+                    new PositionChange(0, 1, 1, 1, 0, 1),
+                    new PositionChange(0, 2, 1, 0, 0, 1)
+                }
+            },
+            new Movement
+            {
+                Identifier = "S2",
+                Slice = CubeSlice.Standing,
+                Direction = MoveDirection.Double,
+                SideChanges = new[]
+                {
+                    new SideChange(Up, Down),
+                    new SideChange(Right, Left),
+                    new SideChange(Down, Up),
+                    new SideChange(Left, Right)
+                },
+                PositionChanges = new[]
+                {
+                    new PositionChange(1, 2, 1, 1, 0, 1),
+                    new PositionChange(2, 2, 1, 0, 0, 1),
+                    new PositionChange(2, 1, 1, 0, 1, 1),
+                    new PositionChange(2, 0, 1, 0, 2, 1),
+                    new PositionChange(1, 0, 1, 1, 2, 1),
+                    new PositionChange(0, 0, 1, 2, 2, 1),
+                    new PositionChange(0, 1, 1, 2, 1, 1),
+                    new PositionChange(0, 2, 1, 2, 0, 1)
                 }
             }
         };

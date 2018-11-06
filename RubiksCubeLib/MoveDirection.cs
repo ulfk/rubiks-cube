@@ -3,7 +3,7 @@ namespace RubiksCubeLib
 {
     public enum MoveDirection
     {
-        Regular,
+        Single,
         Inverted,
         Double
     }

@@ -12,12 +12,12 @@ namespace RubiksCubeLib
         private Position _preparedPosition;
         private bool _changesPrepared = false;
 
-        public Piece PrepareChanges(Position position, OrientationChange[] orientationChanges)
+        public Piece PrepareChanges(Position position, SideChange[] sideChanges)
         {
             _preparedPosition = position;
-            foreach (var orientationChange in orientationChanges)
+            foreach (var orientationChange in sideChanges)
             {
-                ColorTags.FirstOrDefault(c => c.CubeOrientation == orientationChange.From)?.PrepareChange(orientationChange.To);
+                ColorTags.FirstOrDefault(c => c.CubeSide == orientationChange.From)?.PrepareChange(orientationChange.To);
             }
 
             _changesPrepared = true;

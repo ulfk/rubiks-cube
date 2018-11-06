@@ -27,7 +27,7 @@ namespace RubiksCubeUI
                 foreach (var colorTag in piece.ColorTags)
                 {
                     var panel = CreatePanel(
-                        colorTag.CubeOrientation, 
+                        colorTag.CubeSide, 
                         colorTag.CubeColor, 
                         piece.Position.X,
                         piece.Position.Y, 
@@ -40,7 +40,7 @@ namespace RubiksCubeUI
             this.ResumeLayout(false);
         }
 
-        private Label CreatePanel(CubeOrientation orientation, CubeColor color, int X, int Y, int Z)
+        private Label CreatePanel(CubeSide side, CubeColor color, int X, int Y, int Z)
         {
             const int mainMarginX = 20;
             const int mainMarginY = 20;
@@ -51,37 +51,37 @@ namespace RubiksCubeUI
             var offset = new Point();
             var calcX = 0;
             var calcY = 0;
-            if (orientation == CubeOrientation.Up)
+            if (side == CubeSide.Up)
             {
                 offset = new Point(mainMarginX + dimension * 3, mainMarginY);
                 calcX = X;
                 calcY = 2 - Z;
             }
-            else if (orientation == CubeOrientation.Front)
+            else if (side == CubeSide.Front)
             {
                 offset = new Point(mainMarginX + dimension * 3, mainMarginY + dimension * 3);
                 calcX = X;
                 calcY = 2 - Y;
             }
-            else if (orientation == CubeOrientation.Down)
+            else if (side == CubeSide.Down)
             {
                 offset = new Point(mainMarginX + dimension * 3, mainMarginY + dimension * 6);
                 calcX = X;
                 calcY = Z;
             }
-            else if (orientation == CubeOrientation.Back)
+            else if (side == CubeSide.Back)
             {
                 offset = new Point(mainMarginX + dimension * 9, mainMarginY + dimension * 3);
                 calcX = 2 - X;
                 calcY = 2 - Y;
             }
-            else if (orientation == CubeOrientation.Right)
+            else if (side == CubeSide.Right)
             {
                 offset = new Point(mainMarginX + dimension * 6, mainMarginY + dimension * 3);
                 calcX = Z;
                 calcY = 2 - Y;
             }
-            else if (orientation == CubeOrientation.Left)
+            else if (side == CubeSide.Left)
             {
                 offset = new Point(mainMarginX, mainMarginY + dimension * 3);
                 calcX = 2 - Z;
@@ -95,13 +95,13 @@ namespace RubiksCubeUI
                 Location = new Point(offset.X + dimension * calcX, offset.Y + dimension * calcY),
                 Name = $"label{X}{Y}{Z}",
                 Size = size,
-                Text = calcX == 1 && calcY == 1 ? orientation.ToString().Substring(0, 1) : "",
+                Text = calcX == 1 && calcY == 1 ? side.ToString().Substring(0, 1) : "",
                 TabIndex = 0,
                 TextAlign = ContentAlignment.MiddleCenter,
                 Font = new Font("Microsoft Sans Serif", 10F, FontStyle.Regular, GraphicsUnit.Point, 0)
             };
 
-            _labels[X, Y, Z,(int)orientation] = label;
+            _labels[X, Y, Z,(int)side] = label;
 
             return label;
         }
@@ -128,7 +128,7 @@ namespace RubiksCubeUI
             {
                 foreach (var colorTag in piece.ColorTags)
                 {
-                    _labels[piece.Position.X, piece.Position.Y, piece.Position.Z, (int) colorTag.CubeOrientation].BackColor =
+                    _labels[piece.Position.X, piece.Position.Y, piece.Position.Z, (int) colorTag.CubeSide].BackColor =
                         MapCubeColor(colorTag.CubeColor);
                 }
             }
@@ -136,40 +136,40 @@ namespace RubiksCubeUI
             ResumeLayout(false);
         }
 
-        private void DoRotation(CubeOrientation side, MoveDirection moveDirection)
+        private void DoRotation(CubeSlice slice, MoveDirection moveDirection)
         {
-            _cube.Rotate(side, moveDirection);
+            _cube.Rotate(slice, moveDirection);
             UpdateCubeView();
         }
 
         private void buttonRight_Click(object sender, EventArgs e)
         {
-            DoRotation(CubeOrientation.Right, MoveDirection.Regular);
+            DoRotation(CubeSlice.Right, MoveDirection.Single);
         }
 
         private void buttonRightInverted_Click(object sender, EventArgs e)
         {
-            DoRotation(CubeOrientation.Right, MoveDirection.Inverted);
+            DoRotation(CubeSlice.Right, MoveDirection.Inverted);
         }
 
         private void buttonLeft_Click(object sender, EventArgs e)
         {
-            DoRotation(CubeOrientation.Left, MoveDirection.Regular);
+            DoRotation(CubeSlice.Left, MoveDirection.Single);
         }
 
         private void buttonLeftInverted_Click(object sender, EventArgs e)
         {
-            DoRotation(CubeOrientation.Left, MoveDirection.Inverted);
+            DoRotation(CubeSlice.Left, MoveDirection.Inverted);
         }
 
         private void buttonFront_Click(object sender, EventArgs e)
         {
-            DoRotation(CubeOrientation.Front, MoveDirection.Regular);
+            DoRotation(CubeSlice.Front, MoveDirection.Single);
         }
 
         private void buttonFrontInverted_Click(object sender, EventArgs e)
         {
-            DoRotation(CubeOrientation.Front, MoveDirection.Inverted);
+            DoRotation(CubeSlice.Front, MoveDirection.Inverted);
         }
 
         private void buttonReset_Click(object sender, EventArgs e)
@@ -180,32 +180,32 @@ namespace RubiksCubeUI
 
         private void buttonBack_Click(object sender, EventArgs e)
         {
-            DoRotation(CubeOrientation.Back, MoveDirection.Regular);
+            DoRotation(CubeSlice.Back, MoveDirection.Single);
         }
 
         private void buttonBackInverted_Click(object sender, EventArgs e)
         {
-            DoRotation(CubeOrientation.Back, MoveDirection.Inverted);
+            DoRotation(CubeSlice.Back, MoveDirection.Inverted);
         }
 
         private void buttonUp_Click(object sender, EventArgs e)
         {
-            DoRotation(CubeOrientation.Up, MoveDirection.Regular);
+            DoRotation(CubeSlice.Up, MoveDirection.Single);
         }
 
         private void buttonUpInverted_Click(object sender, EventArgs e)
         {
-            DoRotation(CubeOrientation.Up, MoveDirection.Inverted);
+            DoRotation(CubeSlice.Up, MoveDirection.Inverted);
         }
 
         private void buttonDown_Click(object sender, EventArgs e)
         {
-            DoRotation(CubeOrientation.Down, MoveDirection.Regular);
+            DoRotation(CubeSlice.Down, MoveDirection.Single);
         }
 
         private void buttonDownInverted_Click(object sender, EventArgs e)
         {
-            DoRotation(CubeOrientation.Down, MoveDirection.Inverted);
+            DoRotation(CubeSlice.Down, MoveDirection.Inverted);
         }
 
         private void textBoxAlgorithm_TextChanged(object sender, EventArgs e)
@@ -233,32 +233,32 @@ namespace RubiksCubeUI
 
         private void buttonRightDouble_Click(object sender, EventArgs e)
         {
-            DoRotation(CubeOrientation.Right, MoveDirection.Double);
+            DoRotation(CubeSlice.Right, MoveDirection.Double);
         }
 
         private void buttonLeftDouble_Click(object sender, EventArgs e)
         {
-            DoRotation(CubeOrientation.Left, MoveDirection.Double);
+            DoRotation(CubeSlice.Left, MoveDirection.Double);
         }
 
         private void buttonFrontDouble_Click(object sender, EventArgs e)
         {
-            DoRotation(CubeOrientation.Front, MoveDirection.Double);
+            DoRotation(CubeSlice.Front, MoveDirection.Double);
         }
 
         private void buttonBackDouble_Click(object sender, EventArgs e)
         {
-            DoRotation(CubeOrientation.Back, MoveDirection.Double);
+            DoRotation(CubeSlice.Back, MoveDirection.Double);
         }
 
         private void buttonUpDouble_Click(object sender, EventArgs e)
         {
-            DoRotation(CubeOrientation.Up, MoveDirection.Double);
+            DoRotation(CubeSlice.Up, MoveDirection.Double);
         }
 
         private void buttonDownDouble_Click(object sender, EventArgs e)
         {
-            DoRotation(CubeOrientation.Down, MoveDirection.Double);
+            DoRotation(CubeSlice.Down, MoveDirection.Double);
         }
     }
 }

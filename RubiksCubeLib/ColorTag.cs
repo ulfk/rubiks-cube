@@ -4,20 +4,20 @@
     {
         public CubeColor CubeColor { get; set; }
 
-        public CubeOrientation CubeOrientation { get; set; }
+        public CubeSide CubeSide { get; set; }
 
-        public ColorTag(CubeColor cubeColor, CubeOrientation orientation)
+        public ColorTag(CubeColor cubeColor, CubeSide side)
         {
             CubeColor = cubeColor;
-            CubeOrientation = orientation;
+            CubeSide = side;
         }
 
-        private CubeOrientation _preparedCubeOrientation;
+        private CubeSide _preparedCubeSide;
         private bool _changesPrepared;
 
-        public ColorTag PrepareChange(CubeOrientation cubeOrientation)
+        public ColorTag PrepareChange(CubeSide cubeSide)
         {
-            _preparedCubeOrientation = cubeOrientation;
+            _preparedCubeSide = cubeSide;
             _changesPrepared = true;
 
             return this;
@@ -27,7 +27,7 @@
         {
             if (_changesPrepared)
             {
-                CubeOrientation = _preparedCubeOrientation;
+                CubeSide = _preparedCubeSide;
                 _changesPrepared = false;
             }
         }

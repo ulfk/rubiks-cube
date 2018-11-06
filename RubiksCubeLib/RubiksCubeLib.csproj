@@ -43,13 +43,15 @@
   <ItemGroup>
     <Compile Include="CubeColor.cs" />
     <Compile Include="ColorTag.cs" />
+    <Compile Include="CubeSlice.cs" />
     <Compile Include="IChangable.cs" />
     <Compile Include="MoveDirection.cs" />
     <Compile Include="Movement.cs" />
-    <Compile Include="CubeOrientation.cs" />
+    <Compile Include="CubeSide.cs" />
     <Compile Include="MovementRepository.cs" />
-    <Compile Include="OrientationChange.cs" />
+    <Compile Include="SideChange.cs" />
     <Compile Include="Piece.cs" />
+    <Compile Include="PiecesSelector.cs" />
     <Compile Include="Position.cs" />
     <Compile Include="PositionChange.cs" />
     <Compile Include="RubiksCube.cs" />
