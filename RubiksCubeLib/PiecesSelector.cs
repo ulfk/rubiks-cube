@@ -6,7 +6,7 @@ namespace RubiksCubeLib
 {
     public static class PiecesSelector
     {
-        public static List<Piece> PeacesBySlice(List<Piece> pieces, CubeSlice slice)
+        public static List<Piece> PiecesBySlice(List<Piece> pieces, CubeSlice slice)
         {
             switch (slice)
             {
@@ -32,6 +32,5 @@ namespace RubiksCubeLib
                     throw new ArgumentOutOfRangeException(nameof(slice), slice, null);
             }
         }
-
     }
 }

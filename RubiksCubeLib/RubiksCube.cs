@@ -124,7 +124,7 @@ namespace RubiksCubeLib
 
         private List<Piece> GetPieces(CubeSlice cubeSlice)
         {
-            return PiecesSelector.PeacesBySlice(_pieces, cubeSlice);
+            return PiecesSelector.PiecesBySlice(_pieces, cubeSlice);
         }
 
         private void Rotate(string identifier)
