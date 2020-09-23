@@ -313,6 +313,7 @@
             this.Controls.Add(this.buttonLeft);
             this.Controls.Add(this.buttonRightInverted);
             this.Controls.Add(this.buttonRight);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "CubeForm";
             this.Text = "Rubik\'s Cube UI";
